@@ -1,0 +1,7 @@
+Machine learning is about extracting knowledge from data. 
+It is a research field at the intersection of statistics, artificial intelligence, and computer science and is also known as predictive analytics or statistical learning.
+
+NumPy
+NumPy is one of the fundamental packages for scientific computing in Python. 
+It contains functionality for multidimensional arrays, 
+high-level mathematical functions such as linear algebra operations and the fourier transform, and pseudorandom number generators.
