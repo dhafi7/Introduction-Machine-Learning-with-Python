@@ -1,0 +1,152 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# 🟤 Chapter 6: Algorithm Chains and Pipelines\n",
+    "**Referensi:** *Introduction to Machine Learning with Python* (Andreas C. Müller & Sarah Guido)\n",
+    "---\n",
+    "> **Author:** Dhafi Dzakwan Pratama | 101032300213\n",
+    "> **Topik:** Menghindari Data Leakage dengan Pipeline\n",
+    "---\n",
+    "## 1. Masalah Kebocoran Data (Data Leakage)\n",
+    "Saat kita menggunakan `MinMaxScaler` sebelum melakukan `cross_val_score`, informasi dari data uji ikut masuk ke dalam perhitungan skala (karena kita melakukan fit scaler pada seluruh data uji dan latih sekaligus). Ini menyebabkan performa model terlihat bagus saat validasi, namun memburuk pada data nyata."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import numpy as np\n",
+    "import pandas as pd\n",
+    "import matplotlib.pyplot as plt\n",
+    "from sklearn.datasets import load_breast_cancer\n",
+    "from sklearn.model_selection import train_test_split\n",
+    "\n",
+    "%matplotlib inline"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 2. Membangun Pipeline\n",
+    "Untuk mengatasi masalah di atas, scikit-learn menyediakan class `Pipeline`. Pipeline memastikan bahwa tahapan preprocessing (seperti scaling) hanya dilatih (*fit*) pada **bagian training dari cross-validation**, bukan pada data validasinya."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from sklearn.pipeline import Pipeline\n",
+    "from sklearn.preprocessing import MinMaxScaler\n",
+    "from sklearn.svm import SVC\n",
+    "\n",
+    "cancer = load_breast_cancer()\n",
+    "X_train, X_test, y_train, y_test = train_test_split(cancer.data, cancer.target, random_state=0)\n",
+    "\n",
+    "# Mendefinisikan langkah-langkah di dalam pipeline\n",
+    "pipe = Pipeline([(\"scaler\", MinMaxScaler()), (\"svm\", SVC())])\n",
+    "\n",
+    "# Kita bisa memperlakukan 'pipe' seperti model biasa\n",
+    "pipe.fit(X_train, y_train)\n",
+    "akurasi = pipe.score(X_test, y_test)\n",
+    "\n",
+    "print(f\"Akurasi Test menggunakan Pipeline: {akurasi:.3f}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 3. Menggunakan Pipeline di dalam Grid Search\n",
+    "Kekuatan sesungguhnya dari `Pipeline` terlihat saat digabungkan dengan `GridSearchCV`. Kita bisa mencari parameter terbaik untuk model (misal: SVM) *sekaligus* memastikan preprocessing berjalan aman di dalam lipatan (fold) cross-validation.\n",
+    "\n",
+    "*Catatan sintaks: Kita harus menggunakan nama langkah (step) diikuti oleh dua garis bawah (`__`) lalu nama parameter, contoh: `svm__C`.*"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from sklearn.model_selection import GridSearchCV\n",
+    "\n",
+    "# Membuat grid parameter untuk SVM di dalam pipeline\n",
+    "param_grid = {'svm__C': [0.001, 0.01, 0.1, 1, 10, 100],\n",
+    "              'svm__gamma': [0.001, 0.01, 0.1, 1, 10, 100]}\n",
+    "\n",
+    "grid = GridSearchCV(pipe, param_grid=param_grid, cv=5)\n",
+    "grid.fit(X_train, y_train)\n",
+    "\n",
+    "print(f\"Parameter terbaik di dalam Pipeline:\\n{grid.best_params_}\\n\")\n",
+    "print(f\"Akurasi Validasi Silang Terbaik: {grid.best_score_:.3f}\")\n",
+    "print(f\"Akurasi Test Set Akhir: {grid.score(X_test, y_test):.3f}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 4. Visualisasi Alur Pipeline vs Tradisional\n",
+    "Mari kita visualisasikan konsep *Data Leakage* dengan cara tradisional vs Pipeline menggunakan plot sederhana agar lebih mudah dipahami secara visual."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "fig, axes = plt.subplots(1, 2, figsize=(14, 5))\n",
+    "\n",
+    "# Plot Cara Tradisional (Salah)\n",
+    "axes[0].add_patch(plt.Rectangle((0.1, 0.5), 0.8, 0.4, color='red', alpha=0.3))\n",
+    "axes[0].text(0.5, 0.7, 'Scaling Seluruh Data\\n(Termasuk Test/Validation)', ha='center', va='center', fontsize=12)\n",
+    "axes[0].add_patch(plt.Rectangle((0.1, 0.1), 0.8, 0.3, color='blue', alpha=0.3))\n",
+    "axes[0].text(0.5, 0.25, 'Cross Validation\\n(Model bocor karena tau\\nskala test data)', ha='center', va='center', fontsize=12)\n",
+    "axes[0].set_title(\"Cara Tradisional (Data Leakage)\")\n",
+    "axes[0].axis('off')\n",
+    "\n",
+    "# Plot Cara Pipeline (Benar)\n",
+    "axes[1].add_patch(plt.Rectangle((0.1, 0.1), 0.8, 0.8, color='green', alpha=0.3))\n",
+    "axes[1].text(0.5, 0.75, 'Cross Validation Split', ha='center', va='center', fontsize=12)\n",
+    "axes[1].add_patch(plt.Rectangle((0.2, 0.4), 0.6, 0.2, color='orange', alpha=0.5))\n",
+    "axes[1].text(0.5, 0.5, 'Scaling Hanya pada\\nTraining Fold Saat Itu', ha='center', va='center', fontsize=11)\n",
+    "axes[1].add_patch(plt.Rectangle((0.2, 0.15), 0.6, 0.2, color='blue', alpha=0.5))\n",
+    "axes[1].text(0.5, 0.25, 'Model Fit & Evaluate', ha='center', va='center', fontsize=11)\n",
+    "axes[1].set_title(\"Menggunakan Pipeline (Aman)\")\n",
+    "axes[1].axis('off')\n",
+    "\n",
+    "plt.tight_layout();"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.8.0"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}
