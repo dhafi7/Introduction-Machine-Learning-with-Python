@@ -27,8 +27,8 @@ Berikut adalah daftar rangkuman per bab. Silakan klik tautan pada tabel untuk me
 | :---: | :--- | :--- |
 | **01** | Pengenalan ML, Persiapan Data, & Model k-NN Pertama | [📖 Baca Chapter 1](./Chapter_1_Introduction.ipynb) |
 | **02** | Supervised Learning, Overfitting, Decision Trees, & Linear Models | [📖 Baca Chapter 2](./Chapter_2_Supervised_Learning.ipynb) |
-| **03** | Unsupervised Learning, Preprocessing, Scaling, PCA, & Clustering | [📖 Baca Chapter 3](./Chapter_3.ipynb) |
-| **04** | Feature Engineering, One-Hot Encoding, & Feature Selection | [📖 Baca Chapter 4](./Chapter_4.ipynb) |
+| **03** | Unsupervised Learning, Preprocessing, Scaling, PCA, & Clustering | [📖 Baca Chapter 3](./Chapter_3_Unsupervised_Learning.ipynb) |
+| **04** | Feature Engineering, One-Hot Encoding, & Feature Selection | [📖 Baca Chapter 4](./Chapter_4_Representing_Data_and_Engineering_Features.ipynb) |
 | **05** | Model Evaluation, Cross-Validation, Grid Search, & Metrik | [📖 Baca Chapter 5](./Chapter_5.ipynb) |
 | **06** | Algorithm Chains & Pipelines (Mencegah Data Leakage) | [📖 Baca Chapter 6](./Chapter_6.ipynb) |
 | **07** | Working with Text Data (NLP, Bag-of-Words, TF-IDF, & Topic Modeling) | [📖 Baca Chapter 7](./Chapter_7.ipynb) |
