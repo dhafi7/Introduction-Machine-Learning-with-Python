@@ -1,0 +1,166 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# 🟡 Chapter 4: Representing Data and Engineering Features\n",
+    "**Referensi:** *Introduction to Machine Learning with Python* (Andreas C. Müller & Sarah Guido)\n",
+    "---\n",
+    "> **Author:** Dhafi Dzakwan Pratama | 101032300213\n",
+    "> **Topik:** One-Hot Encoding, Binning, Polynomial Features, dan Automatic Feature Selection\n",
+    "---\n",
+    "## 1. Feature Engineering\n",
+    "Bagaimana kita merepresentasikan data adalah salah satu faktor penentu kesuksesan model *Machine Learning*. Proses menciptakan fitur baru atau mengubah bentuk fitur disebut **Feature Engineering**. Fitur yang tepat bisa membuat algoritma sederhana mengalahkan algoritma kompleks."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import numpy as np\n",
+    "import pandas as pd\n",
+    "import matplotlib.pyplot as plt\n",
+    "from sklearn.model_selection import train_test_split\n",
+    "\n",
+    "%matplotlib inline"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 2. Categorical Variables: One-Hot-Encoding\n",
+    "Banyak algoritma tidak bisa memproses data berupa teks/kategori secara langsung. Kita harus mengubahnya menjadi angka. Metode paling umum adalah *One-Hot-Encoding* (atau *Dummy Variables*), yang membuat kolom biner baru untuk setiap kategori."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Membuat dataset dummy\n",
+    "data = {'Nama': ['Dhafi', 'Budi', 'Siti', 'Andi'],\n",
+    "        'Pekerjaan': ['Mahasiswa', 'Programmer', 'Mahasiswa', 'Desainer'],\n",
+    "        'Umur': [21, 25, 20, 28]}\n",
+    "df = pd.DataFrame(data)\n",
+    "\n",
+    "print(\"DataFrame Asli:\")\n",
+    "display(df)\n",
+    "\n",
+    "# Menggunakan pandas get_dummies\n",
+    "df_encoded = pd.get_dummies(df, columns=['Pekerjaan'])\n",
+    "print(\"\\nDataFrame setelah One-Hot-Encoding:\")\n",
+    "display(df_encoded)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 3. Interaksi dan Polynomial Features\n",
+    "Terkadang, fitur tunggal tidak cukup untuk memodelkan hubungan yang kompleks (terutama untuk model linier). Menambahkan fitur *Polynomial* (kuadrat, pangkat tiga, dll) dapat membuat model linier mampu menyesuaikan diri dengan data yang melengkung."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from sklearn.linear_model import LinearRegression\n",
+    "from sklearn.preprocessing import PolynomialFeatures\n",
+    "\n",
+    "# Membuat data non-linier (gelombang sinus dengan sedikit noise)\n",
+    "X = np.linspace(-3, 3, 100).reshape(-1, 1)\n",
+    "y = np.sin(X[:, 0]) + np.random.normal(0, 0.2, X.shape[0])\n",
+    "\n",
+    "# Model Linier standar (Underfitting)\n",
+    "reg = LinearRegression().fit(X, y)\n",
+    "y_pred_linear = reg.predict(X)\n",
+    "\n",
+    "# Menambahkan Polynomial Features pangkat 5\n",
+    "poly = PolynomialFeatures(degree=5, include_bias=False)\n",
+    "X_poly = poly.fit_transform(X)\n",
+    "\n",
+    "# Model Linier setelah data dipolynomial-kan\n",
+    "reg_poly = LinearRegression().fit(X_poly, y)\n",
+    "y_pred_poly = reg_poly.predict(X_poly)\n",
+    "\n",
+    "# Visualisasi\n",
+    "plt.figure(figsize=(10, 5))\n",
+    "plt.plot(X, y, 'o', c='gray', markersize=5, label='Data Asli')\n",
+    "plt.plot(X, y_pred_linear, c='red', lw=3, label='Linear Regression (Standard)')\n",
+    "plt.plot(X, y_pred_poly, c='green', lw=3, label='Linear Regression (Polynomial Degree 5)')\n",
+    "plt.title(\"Efek Menambahkan Polynomial Features pada Model Linier\")\n",
+    "plt.legend();"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 4. Automatic Feature Selection\n",
+    "Ketika kita memiliki terlalu banyak fitur (terutama setelah menambahkan polinomial), kita perlu membuang fitur yang tidak berguna agar model tidak overfitting dan lebih cepat. Buku ini mencontohkan seleksi fitur univariat (seperti ANOVA)."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from sklearn.datasets import load_breast_cancer\n",
+    "from sklearn.feature_selection import SelectPercentile, f_classif\n",
+    "\n",
+    "cancer = load_breast_cancer()\n",
+    "\n",
+    "# Simulasi: Menambahkan 50 fitur acak (noise/sampah) ke dataset asli\n",
+    "rng = np.random.RandomState(42)\n",
+    "noise = rng.normal(size=(len(cancer.data), 50))\n",
+    "X_w_noise = np.hstack([cancer.data, noise])\n",
+    "\n",
+    "# Menggunakan SelectPercentile untuk memilih 50% fitur terbaik\n",
+    "select = SelectPercentile(score_func=f_classif, percentile=50)\n",
+    "select.fit(X_w_noise, cancer.target)\n",
+    "X_selected = select.transform(X_w_noise)\n",
+    "\n",
+    "print(f\"Bentuk data sebelum feature selection: {X_w_noise.shape}\")\n",
+    "print(f\"Bentuk data setelah feature selection: {X_selected.shape}\\n\")\n",
+    "\n",
+    "# Visualisasi fitur mana saja yang dipilih\n",
+    "mask = select.get_support()\n",
+    "plt.matshow(mask.reshape(1, -1), cmap='gray_r')\n",
+    "plt.xlabel(\"Index Fitur\")\n",
+    "plt.yticks(())\n",
+    "plt.title(\"Mask Seleksi Fitur (Hitam = Dipilih, Putih = Dibuang)\\n\");\n",
+    "plt.text(0, -0.6, \"Catatan: Sebagian besar fitur asli (index 0-29) dipilih, sedangkan noise dibuang.\", \n",
+    "         fontsize=10, style='italic')"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.8.0"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}
