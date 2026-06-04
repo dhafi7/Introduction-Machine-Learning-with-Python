@@ -1,69 +1,37 @@
 # 🤖 Introduction to Machine Learning with Python (Jupyter Notebook Summaries)
 
-![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
-![Scikit-Learn](https://img.shields.io/badge/scikit--learn-%23F7931E.svg?style=for-the-badge&logo=scikit-learn&logoColor=white)
-![Jupyter Notebook](https://img.shields.io/badge/jupyter-%23FA0F00.svg?style=for-the-badge&logo=jupyter&logoColor=white)
-
-Selamat datang di *repository* pembelajaran *Machine Learning* saya! 
-
-*Repository* ini berisi rangkuman komprehensif beserta implementasi kode langsung dari buku **"Introduction to Machine Learning with Python: A Guide for Data Scientists"** karya Andreas C. Müller & Sarah Guido. 
-
-Setiap bab telah dirangkum dalam bentuk file **Jupyter Notebook (.ipynb)** yang interaktif, lengkap dengan penjelasan teori, contoh kode menggunakan `scikit-learn`, serta visualisasi data yang menarik.
+This repository contains a collection of highly comprehensive, production-oriented Jupyter Notebook summaries (`.ipynb`) in valid JSON format. They reproduce the core engineering frameworks, algorithmic mechanics, and code from the book *Introduction to Machine Learning with Python: A Guide for Data Scientists*.
 
 ---
 
-## 👨‍💻 Profil Penulis
-* **Nama:** Dhafi Dzakwan Pratama
-* **NIM:** 101032300213
-* **Program Studi:** S1 Teknik Komputer
+## 📂 Repository Structure
+
+The summaries are organized sequentially by topic as structured educational guides:
+
+* **`Chapter_1_Introduction.ipynb`**
+  An absolute primer on the Python machine learning ecosystem. Covers the object lifecycles of `scikit-learn` (`Estimators`, `Predictors`), data visualization matrices (`Pair Plots`), and builds a complete supervised multiclass classification pipeline using the classic Iris flower dataset.
+* **`Chapter_3_Unsupervised_Learning.ipynb`**
+  A comprehensive guide to discovering hidden data patterns without explicit target vectors. Covers advanced numerical preprocessing transformations (`StandardScaler`, `MinMaxScaler`, `RobustScaler`), dimensionality reduction via `PCA`, and a deep analysis of clustering algorithms (`K-Means`, `Agglomerative Clustering`, `DBSCAN`) along with validation scoring metrics (`Silhouette Score`, `Adjusted Rand Index`).
+* **`Chapter_6_Algorithm_Chains_and_Pipelines.ipynb`**
+  A rigorous engineering overview designed to mitigate data leakage catastrophes. Teaches how to safely encapsulate complex preprocessing sequences alongside terminal supervised models into cohesive `Pipeline` units, and find optimal parameter bounds securely inside `GridSearchCV` cross-validation loops.
+* **`Chapter_8_Wrapping_Up.ipynb`**
+  A blueprint for scaling machine learning applications from notebook prototypes into live production environments. Details model serialization methods (`joblib`), production latency trade-offs, testing strategies (`A/B Testing`, `Shadow Deployments`), and frameworks for logging and monitoring `Data Drift` over time.
 
 ---
 
-## 📑 Daftar Isi (Chapter Summaries)
+## 🛠️ Tech Stack & Ecosystem
 
-Berikut adalah daftar rangkuman per bab. Silakan klik tautan pada tabel untuk membaca catatan dan melihat kode dari masing-masing bab:
-
-| Chapter | Topik Utama | File Notebook |
-| :---: | :--- | :--- |
-| **01** | Pengenalan ML, Persiapan Data, & Model k-NN Pertama | [📖 Baca Chapter 1](./Chapter_1_Introduction.ipynb) |
-| **02** | Supervised Learning, Overfitting, Decision Trees, & Linear Models | [📖 Baca Chapter 2](./Chapter_2_Supervised_Learning.ipynb) |
-| **03** | Unsupervised Learning, Preprocessing, Scaling, PCA, & Clustering | [📖 Baca Chapter 3](./Chapter_3_Unsupervised_Learning.ipynb) |
-| **04** | Feature Engineering, One-Hot Encoding, & Feature Selection | [📖 Baca Chapter 4](./Chapter_4_Representing_Data_and_Engineering_Features.ipynb) |
-| **05** | Model Evaluation, Cross-Validation, Grid Search, & Metrik | [📖 Baca Chapter 5](./Chapter_5_Model_Evaluation_and_Improvement.ipynb) |
-| **06** | Algorithm Chains & Pipelines (Mencegah Data Leakage) | [📖 Baca Chapter 6](./Chapter_6_Algorithm_Chains_and_Pipelines.ipynb) |
-| **07** | Working with Text Data (NLP, Bag-of-Words, TF-IDF, & Topic Modeling) | [📖 Baca Chapter 7](./Chapter_7_Working_with_Text_Data.ipynb) |
-| **08** | Wrapping Up (Alur Kerja ML, Etika Data, & Next Steps) | [📖 Baca Chapter 8](./Chapter_8_Wrapping_Up.ipynb) |
+The code and concepts inside these notebooks leverage the core scientific Python libraries:
+* **`scikit-learn`** — The primary library for machine learning models, pipelines, and evaluation metrics.
+* **`NumPy` & `SciPy`** — Vectorized multidimensional arrays and sparse coordinate matrix structures for high-performance computing.
+* **`Pandas`** — Tabular data manipulation and preprocessing frames.
+* **`Matplotlib` & `Seaborn`** — Advanced statistical data visualization and decision boundary analysis.
 
 ---
 
-## 🛠️ Tech Stack & Libraries
-Rangkuman dalam *repository* ini menggunakan ekosistem Data Science Python standar:
-* **Bahasa:** Python 3.x
-* **Data Manipulation:** `pandas`, `numpy`
-* **Machine Learning:** `scikit-learn`
-* **Data Visualization:** `matplotlib`
+## 🚀 How to Use These Notebooks
 
----
-
-## 🚀 Cara Menjalankan Kode
-
-Semua file telah di-*render* agar grafiknya dapat langsung dilihat di GitHub. Namun, jika Anda ingin menjalankan kodenya sendiri dan bereksperimen:
-
-1. **Menggunakan Google Colab (Direkomendasikan):**
-   * Buka [Google Colab](https://colab.research.google.com/).
-   * Pilih tab **GitHub** dan masukkan URL *repository* ini.
-   * Buka salah satu file `.ipynb` dan klik **Runtime -> Run All**.
-
-2. **Menjalankan Secara Lokal:**
-   * *Clone repository* ini ke komputer Anda:
-     ```bash
-     git clone [https://github.com/USERNAME_ANDA/NAMA_REPOSITORY_ANDA.git](https://github.com/USERNAME_ANDA/NAMA_REPOSITORY_ANDA.git)
-     ```
-   * Buka terminal/CMD dan jalankan Jupyter Notebook:
-     ```bash
-     jupyter notebook
-     ```
-   * Pastikan Anda telah menginstal *library* yang dibutuhkan (`pip install numpy pandas matplotlib scikit-learn jupyter`).
-
----
-*Dibuat untuk keperluan akademik dan portofolio pembelajaran Machine Learning.*
+All files are stored in completely standardized, valid JSON notebook structures. You can open, execute, and inspect them immediately by:
+1. Cloning this repository to your local machine.
+2. Dragging and dropping the `.ipynb` files directly into **Google Colab**, **Jupyter Lab**, or opening them via the native Jupyter extension in **VS Code**.
+3. Running the execution blocks sequentially to observe the underlying algorithm mechanics in action.
